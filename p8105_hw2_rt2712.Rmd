@@ -14,13 +14,20 @@ Load packages
 library(tidyverse)
 ```
 
-Import data
+Import data, clean names
 ```{r}
-subway_data = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
+subway_data = 
+  (read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>%
+  janitor::clean_names())
 ```
 
+## Step
 
+Manipulate the data to a tidy form
 
+```{r}
+
+```
 
 
 
