@@ -1,0 +1,35 @@
+---
+title: "p8105_hw2_rt2712"
+author: "Rachel Tsong"
+date: "5 October 2018"
+output: github_document
+---
+
+# Problem 1
+
+## Step 1
+
+Load packages
+```{r}
+library(tidyverse)
+```
+
+Import data
+```{r}
+subway_data = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
