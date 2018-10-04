@@ -14,20 +14,95 @@ Load packages
 library(tidyverse)
 ```
 
-Import data, clean names
-```{r}
-subway_data = 
-  (read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>%
-  janitor::clean_names())
-```
 
-## Step
+## Step 2
 
-Manipulate the data to a tidy form
+Load data, clean names, select necessary columns
 
 ```{r}
-
+subway_data = (
+  read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>%
+  janitor::clean_names() %>%
+  select(line, station_name, station_latitude, station_longitude, entrance_type, entry, route1:route11, vending, ada) %>%
+  mutate(entry = recode(entry, "YES" = TRUE, "NO" = FALSE))
+)
 ```
+
+### Summary of dataset
+
+First I imported the data from the .csv file and cleaned the names so that the dataset is easier to work with. After that, I selected the columns for line, station name, station latitude and longitude, entrance type, routes served, vending, and ADA compliance. Lastly, I changed the entry column into a logical vector. The resulting data set is 1868 x 19. Right now, the data frame is not yet tidy because there are variables in the column names: route1-route11. These columns need to be reformatted so that each variable has its own column, each observation has its own row, and there is a single value in every cell.
+
+## Step 3 
+
+### Answer questions:
+
+**How many distinct stations?**
+```{r}
+distinct(subway_data, line, station_name)
+```
+
+There are 465 unique stations. 
+
+**How many stations are ada compliant?**
+```{r}
+filter(
+  (distinct(subway_data, line, station_name, .keep_all = TRUE)),
+  ada == TRUE)
+```
+
+84 distinct stations are ADA compliant.
+
+**What proportion of entrances/exits without vending allow entrance?**
+```{r}
+filter(subway_data, vending == "NO", entry == TRUE)
+```
+
+69 entrances/exits without vending allow entrance.
+
+## Step 4
+
+Reformat route # and route name, answer questions
+```{r}
+subway_data_tidy= gather(subway_data, key = route_number, value = route, route1:route11)
+
+filter(
+  (distinct(subway_data_tidy, line, station_name, .keep_all = TRUE)),
+  route == "A"
+)
+
+filter(
+  (distinct(subway_data_tidy, line, station_name, .keep_all = TRUE)),
+  route == "A", ada == TRUE
+)
+```
+
+There are 60 distinct subway stations that serve the A train, and 17 of these stations that serve the A train are ADA compliant.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
