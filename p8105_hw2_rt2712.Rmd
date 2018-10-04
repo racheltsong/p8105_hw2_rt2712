@@ -17,7 +17,7 @@ library(tidyverse)
 
 ## Step 2
 
-Load data, clean names, select necessary columns
+Load and clean up data
 
 ```{r}
 subway_data = (
@@ -82,6 +82,10 @@ There are 60 distinct subway stations that serve the A train, and 17 of these st
 
 # Problem 2
 
+## Step 1
+
+Load and clean up data
+
 ```{r read and clean sheet 1}
 library(readxl)
 
@@ -96,15 +100,22 @@ trash_wheel = (
 ```{r read and clean precip data}
 precip_2017 = (
   read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = 3, range = "A2:B14") %>% 
-  janitor::clean_names()
+  janitor::clean_names() %>%
+  drop_na() %>%
+  mutate(year = "2017")
 )
 
 precip_2016 = (
   read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = 4, range = "A2:B14") %>% 
-  janitor::clean_names() 
+  janitor::clean_names() %>%
+  drop_na() %>%
+  mutate(year = "2016")
 )
 
-
+precip_data = (
+  bind_rows(precip_2016, precip_2017) %>%
+  mutate(month = month.name[month])
+)
 
 ```
 
