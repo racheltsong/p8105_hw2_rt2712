@@ -23,7 +23,7 @@ Load data, clean names, select necessary columns
 subway_data = (
   read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>%
   janitor::clean_names() %>%
-  select(line, station_name, station_latitude, station_longitude, entrance_type, entry, route1:route11, vending, ada) %>%
+  select(line:entry, vending, ada) %>%
   mutate(entry = recode(entry, "YES" = TRUE, "NO" = FALSE))
 )
 ```
@@ -54,16 +54,18 @@ filter(
 
 **What proportion of entrances/exits without vending allow entrance?**
 ```{r}
+filter(subway_data, vending == "NO")
+
 filter(subway_data, vending == "NO", entry == TRUE)
 ```
 
-69 entrances/exits without vending allow entrance.
+I ran the first line of the code chunk above to tell me how many stations don't have vending and the second line to tell me how many stations that do not offer vending allow entrance. I can conclude from the resulting tibbles that 69/183 or 37.7% of stations that do not offer vending do allow entrance.
 
 ## Step 4
 
 Reformat route # and route name, answer questions
 ```{r}
-subway_data_tidy= gather(subway_data, key = route_number, value = route, route1:route11)
+subway_data_tidy = gather(subway_data, key = route_number, value = route, route1:route11)
 
 filter(
   (distinct(subway_data_tidy, line, station_name, .keep_all = TRUE)),
@@ -78,9 +80,33 @@ filter(
 
 There are 60 distinct subway stations that serve the A train, and 17 of these stations that serve the A train are ADA compliant.
 
+# Problem 2
+
+```{r read and clean sheet 1}
+library(readxl)
+
+trash_wheel = (
+  read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = 1, range = "A2:N256") %>%
+  janitor::clean_names() %>%
+  drop_na(dumpster) %>% 
+  mutate(sports_balls = as.integer(round(sports_balls)))
+)
+```
+
+```{r read and clean precip data}
+precip_2017 = (
+  read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = 3, range = "A2:B14") %>% 
+  janitor::clean_names()
+)
+
+precip_2016 = (
+  read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", sheet = 4, range = "A2:B14") %>% 
+  janitor::clean_names() 
+)
 
 
 
+```
 
 
 
