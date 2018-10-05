@@ -18,7 +18,6 @@ library(tidyverse)
 ## Step 2
 
 Load and clean up data
-
 ```{r}
 subway_data = (
   read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>%
@@ -124,8 +123,34 @@ precip_data = (
 
 In the trash_wheel data set, there are `r nrow(trash_wheel)` observations. These data show the amount of trash that Mr. Trash Wheel picked up from the Jones Falls River in Baltimore from May 2014 until July 2018. The columns in the data set show the types of trash  collected (e.g. cigarette butts, glass bottles, etc.) as well as temporal information. Additionally, the data give the number of homes powered by incineration of the trash collected. Each row represents the contents of a single full "dumpster," which is what Mr. Trash Wheel deposits the trash collected into. The median number of sports balls collected per dumpster in 2016 is `r median(trash_wheel$sports_balls[trash_wheel$year == "2016"])` balls.
 
-The precip_data data set gives the total amount of precipitation per month for 2016 and 2017. In the original data, the units for the precipitation total per month was given in the title. I decided to provide that information directly in the column name for totals, so I renamed that column total_inches. I thought this was important information to retain to prevent ambiguity. The total amount of precipitation in 2017 was `r sum(precip_2017$total)` inches.
+The precip_data data set gives the total amount of precipitation per month for 2016 and 2017. In the original data, the units for the precipitation total per month was given in the title. I decided to provide that information in the column name for totals, so I renamed that column total_inches. I thought this was important information to retain to prevent ambiguity. The total amount of precipitation in 2017 was `r sum(precip_2017$total)` inches.
 
+
+# Problem 3
+
+## Step 1
+
+Load and clean up data
+```{r}
+devtools::install_github("p8105/p8105_datasets")
+
+library(p8105.datasets)
+
+data(brfss_smart2010)
+
+brfss_data = (
+  janitor::clean_names(brfss_smart2010) %>%
+  filter(topic == "Overall Health") %>%
+  select(year:locationdesc, response, data_value) %>%
+  rename(state = locationabbr, county = locationdesc) %>%
+  spread(key = response, value = data_value) %>%
+  janitor::clean_names() %>%
+  mutate(upper_rating = excellent + very_good) %>%
+  select(year:excellent, very_good, good, fair, poor, upper_rating)
+)
+```
+
+In the code above, I loaded the data set and selected the rows for overall health and the columns for the relevent information. After that, I noticed that the variable names for location were not very informative, so I changed them to "state" and "county" to be more clear what information was in each column. Then I made the response to the question "How is your general health?" a column and rows in this column indicate the proportion of responders who gave each rating at a particular location. Last, I made a variable for "upper rating" to indicate the proportion of responders who answered "excellent" or "very good" and then re-ordered the columns in a logical way.
 
 
 
