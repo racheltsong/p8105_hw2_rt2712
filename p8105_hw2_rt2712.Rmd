@@ -152,29 +152,35 @@ brfss_data = (
 
 In the code above, I loaded the data set and selected the rows for overall health and the columns for the relevent information. After that, I noticed that the variable names for location were not very informative, so I changed them to "state" and "county" to be more clear what information was in each column. Then I made the response to the question "How is your general health?" a column and rows in this column indicate the proportion of responders who gave each rating at a particular location. Last, I made a variable for "upper rating" to indicate the proportion of responders who answered "excellent" or "very good" and then re-ordered the columns in a logical way.
 
+## Step 2
 
+### Answer questions
 
+**Locations**
+There are `r nrow(distinct(brfss_data, county))` different counties in the dataset, each representing a unique location. There are `r nrow(distinct(brfss_data, state))` distinct entries in the "state" category, which at first I though was a mistake, but upon closer inspection I discovered that Washington, D.C. had its own row and all 50 states are represented as well. Using the summary table obtained by running ```summary(as.factor(brfss_data$state))``` it can be determined that New Jersey has the most observations (146).
 
+**2002 Excellent Responses**
+In 2002, the median proportion of "excellent" responses was `r median(brfss_data$excellent[brfss_data$year == "2002"], na.rm = TRUE)`. 
 
+**Plots**
 
+```{r histogram}
+library(ggplot2)
 
+brfss_histo = filter(brfss_data, year == 2002)
 
+ggplot(brfss_histo, aes(x = excellent)) + 
+  geom_histogram()
+```
 
+```{r scatterplot}
+brfss_scatter = (
+  filter(brfss_data, county == "NY - New York County" | county == "NY - Queens County")
+)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ggplot(brfss_scatter, aes(x = year, y = excellent, color = county)) + 
+  geom_point()
+```
 
 
 
